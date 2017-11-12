@@ -125,7 +125,7 @@ folds = list(StratifiedKFold(n_splits=config.NUM_SPLITS, shuffle=True,
 
 
 # ------------------ DeepFM Model ------------------
-# tune the following params to get gini around 0.28
+# params
 dfm_params = {
     "use_fm": True,
     "use_deep": True,

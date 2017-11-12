@@ -1,7 +1,4 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
-example/__pycache__/
-example/*.csv
 *.py[cod]
 *$py.class
 
@@ -106,5 +103,8 @@ venv.bak/
 .mypy_cache/
 
 #
-data/*
+__pycache__/
+example/__pycache__/
+example/data/*.csv
+example/output/*.csv
 yellowfin.py
