@@ -27,6 +27,7 @@ class DeepFM(BaseEstimator, TransformerMixin):
                  use_fm=True, use_deep=True,
                  l2_reg=0.0, metric=roc_auc_score,
                  greater_is_better=True):
+        assert (use_fm or use_deep)
 
         self.feature_size = feature_size        # denote as M, size of the feature dictionary
         self.field_size = field_size            # denote as F, size of the feature fields
@@ -251,19 +252,19 @@ class DeepFM(BaseEstimator, TransformerMixin):
 
     def fit(self, Xi_train, Xv_train, y_train,
             Xi_valid=None, Xv_valid=None, y_valid=None,
-            early_stopping=False, fit_on_all=False):
+            early_stopping=False, refit=False):
         """
-        :param Xi_train: [[ind1_1, ind1_2, ...], [ind2_1, ind2_2, ...], [], ...]
+        :param Xi_train: [[ind1_1, ind1_2, ...], [ind2_1, ind2_2, ...], ..., [indi_1, indi_2, ..., indi_j, ...], ...]
                          indi_j is the feature index of feature field j of sample i in the training set
-        :param Xv_train: [[val1_1, val1_2, ...], [val2_1, val2_2, ...], [], ...]
+        :param Xv_train: [[val1_1, val1_2, ...], [val2_1, val2_2, ...], ..., [vali_1, vali_2, ..., vali_j, ...], ...]
                          vali_j is the feature value of feature field j of sample i in the training set
-                         vali_j can be either binary (1/0) or float (e.g., 10.24)
+                         vali_j can be either binary (1/0, for binary/categorical features) or float (e.g., 10.24, for numerical features)
         :param y_train: label of each sample in the training set
         :param Xi_valid: list of list of feature indices of each sample in the validation set
         :param Xv_valid: list of list of feature values of each sample in the validation set
         :param y_valid: label of each sample in the validation set
         :param early_stopping: perform early stopping or not
-        :param fit_on_all: refit the model on the train+valid dataset or not
+        :param refit: refit the model on the train+valid dataset or not
         :return: None
         """
         has_valid = Xv_valid is not None
@@ -292,7 +293,7 @@ class DeepFM(BaseEstimator, TransformerMixin):
                 break
 
         # fit a few more epoch on train+valid until result reaches the best_train_score
-        if has_valid and fit_on_all:
+        if has_valid and refit:
             if self.greater_is_better:
                 best_valid_score = max(self.valid_result)
             else:

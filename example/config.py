@@ -1,9 +1,9 @@
 
 # set the path-to-files
-TRAIN_FILE = "~/Kaggle/Safe Driver Prediction/Data/train.csv"
-TEST_FILE = "~/Kaggle/Safe Driver Prediction/Data/test.csv"
+TRAIN_FILE = "./data/train.csv"
+TEST_FILE = "./data/test.csv"
 
-SUB_DIR = "."
+SUB_DIR = "./output"
 
 
 NUM_SPLITS = 3
