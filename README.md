@@ -10,7 +10,7 @@ This implementation requires the input data in the following format:
 - [ ] **Xv**: *[[val1_1, val1_2, ...], [val2_1, val2_2, ...], ..., [vali_1, vali_2, ..., vali_j, ...], ...]*
     - *vali_j* is the feature value of feature field *j* of sample *i* in the dataset
     - *vali_j* can be either binary (1/0, for binary/categorical features) or float (e.g., 10.24, for numerical features)
-- [ ] **y**: label of each sample in the dataset
+- [ ] **y**: target of each sample in the dataset (1/0 for classification, numeric number for regression)
 
 Please see `example/DataReader.py` an example how to prepare the data in required format for DeepFM.
 
@@ -75,7 +75,7 @@ This implementation also supports regression task. To use DeepFM for regression,
 # Example
 Folder `example` includes an example usage of DeepFM/FM/DNN models for [Porto Seguro's Safe Driver Prediction competition on Kaggle](https://www.kaggle.com/c/porto-seguro-safe-driver-prediction).
 
-Please download the data from the competition website and put them into the `examples/data` folder.
+Please download the data from the competition website and put them into the `example/data` folder.
 
 To train DeepFM model for this dataset, run
 
