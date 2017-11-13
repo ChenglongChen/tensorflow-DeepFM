@@ -25,9 +25,11 @@ class DeepFM(BaseEstimator, TransformerMixin):
                  batch_norm=0, batch_norm_decay=0.995,
                  verbose=False, random_seed=2016,
                  use_fm=True, use_deep=True,
-                 l2_reg=0.0, metric=roc_auc_score,
-                 greater_is_better=True):
+                 loss_type="logloss", eval_metric=roc_auc_score,
+                 l2_reg=0.0, greater_is_better=True):
         assert (use_fm or use_deep)
+        assert loss_type in ["logloss", "mse"], \
+            "loss_type can be either 'logloss' for classification task or 'mse' for regression task"
 
         self.feature_size = feature_size        # denote as M, size of the feature dictionary
         self.field_size = field_size            # denote as F, size of the feature fields
@@ -51,7 +53,8 @@ class DeepFM(BaseEstimator, TransformerMixin):
 
         self.verbose = verbose
         self.random_seed = random_seed
-        self.metric = metric
+        self.loss_type = loss_type
+        self.eval_metric = eval_metric
         self.greater_is_better = greater_is_better
         self.train_result, self.valid_result = [], []
 
@@ -119,8 +122,11 @@ class DeepFM(BaseEstimator, TransformerMixin):
             self.out = tf.add(tf.matmul(concat_input, self.weights["concat_projection"]), self.weights["concat_bias"])
 
             # loss
-            self.out = tf.nn.sigmoid(self.out)
-            self.loss = tf.losses.log_loss(self.label, self.out)
+            if self.loss_type == "logloss":
+                self.out = tf.nn.sigmoid(self.out)
+                self.loss = tf.losses.log_loss(self.label, self.out)
+            elif self.loss_type == "mse":
+                self.loss = tf.nn.l2_loss(tf.subtract(self.label, self.out))
             # l2 regularization on weights
             if self.l2_reg > 0:
                 self.loss += tf.contrib.layers.l2_regularizer(
@@ -375,5 +381,5 @@ class DeepFM(BaseEstimator, TransformerMixin):
         :return: metric of the evaluation
         """
         y_pred = self.predict(Xi, Xv)
-        return self.metric(y, y_pred)
+        return self.eval_metric(y, y_pred)
 

@@ -36,7 +36,7 @@ dfm_params = {
     "batch_norm_decay": 0.995,
     "l2_reg": 0.01,
     "verbose": True,
-    "metric": roc_auc_score,
+    "eval_metric": roc_auc_score,
     "random_seed": 2017
 }
 
@@ -68,6 +68,9 @@ dfm.fit(Xi_train, Xv_train, y_train, Xi_valid, Xv_valid, y_valid, early_stopping
 ```
 
 You can use the FM or DNN part only by setting the parameter `use_fm` or `use_dnn` to `False`.
+
+## Regression
+This implementation also supports regression task. To use DeepFM for regression, you can set `loss_type` as `mse`. Accordingly, you should use eval_metric for regression, e.g., mse or mae.
 
 # Example
 Folder `example` includes an example usage of DeepFM/FM/DNN models for [Porto Seguro's Safe Driver Prediction competition on Kaggle](https://www.kaggle.com/c/porto-seguro-safe-driver-prediction).
