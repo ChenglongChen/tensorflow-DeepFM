@@ -142,7 +142,7 @@ dfm_params = {
     "batch_norm_decay": 0.995,
     "l2_reg": 0.01,
     "verbose": True,
-    "metric": gini_norm,
+    "eval_metric": gini_norm,
     "random_seed": config.RANDOM_SEED
 }
 y_train_dfm, y_test_dfm = _run_base_model_dfm(dfTrain, dfTest, folds, dfm_params)
