@@ -13,6 +13,7 @@ from sklearn.metrics import roc_auc_score
 from time import time
 from tensorflow.contrib.layers.python.layers import batch_norm as batch_norm
 from yellowfin import YFOptimizer
+import os, sys
 
 
 class DeepFM(BaseEstimator, TransformerMixin):
@@ -44,6 +45,7 @@ class DeepFM(BaseEstimator, TransformerMixin):
         self.l2_reg = l2_reg
 
         self.epoch = epoch
+        self.current_epoch = 0
         self.batch_size = batch_size
         self.learning_rate = learning_rate
         self.optimizer_type = optimizer_type
@@ -285,6 +287,7 @@ class DeepFM(BaseEstimator, TransformerMixin):
             # evaluate training and validation datasets
             train_result = self.evaluate(Xi_train, Xv_train, y_train)
             self.train_result.append(train_result)
+            self.current_epoch += 1
             if has_valid:
                 valid_result = self.evaluate(Xi_valid, Xv_valid, y_valid)
                 self.valid_result.append(valid_result)
@@ -382,4 +385,14 @@ class DeepFM(BaseEstimator, TransformerMixin):
         """
         y_pred = self.predict(Xi, Xv)
         return self.eval_metric(y, y_pred)
+
+    def export_model(self, filename='DeepFM_model.epoch'):
+        """
+        :param filename: name of the model to be saved
+        """
+        filepath = os.path.join('models', filename)
+        with self.sess.graph.as_default():
+            self.sess.run(tf.global_variables_initializer())
+            saver = tf.train.Saver()
+            saver.save(self.sess, filepath, global_step=self.current_epoch)
 
